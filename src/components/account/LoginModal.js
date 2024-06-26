@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
-function LoginModal({ show, handleClose, setIsLoggedIn }) {
+function LoginModal({ show, handleClose, setIsLoggedIn, setUserName }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -9,13 +9,16 @@ function LoginModal({ show, handleClose, setIsLoggedIn }) {
     try {
       const response = await axios.post('http://localhost:5075/api/Account/login',
         { email, password, rememberMe });
-      if (response.data) {
-        localStorage.setItem('user', response.data);
-        setIsLoggedIn(true  );
-        handleClose();
-      } else {
-        throw new Error('Invalid response data');
-      }
+        if (response.data && response.data.token) {
+          const { token, userName } = response.data;
+          localStorage.setItem('token', token);
+          localStorage.setItem('userName',userName);
+          setIsLoggedIn(true);
+          setUserName(userName);
+          handleClose();
+        } else {
+          throw new Error('Invalid response data');
+        }
     } catch (error) {
       console.error('Error logging in', error);
       alert('Login failed. Please check your credentials.');
