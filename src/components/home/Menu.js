@@ -5,13 +5,18 @@ import LoginModal from '../account/LoginModal';
 const Menu = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [userName, setUserName] = useState('');
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    setIsLoggedIn(!!token);
+    const user = localStorage.getItem('user');
+    if(user!= null) {
+      setIsLoggedIn(true);
+      setUserName(user);
+    }
   }, []);
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setIsLoggedIn(false);
+    setUserName('');
   };
   const handleLoginClick = () => {
     setShowLoginModal(true);
@@ -26,7 +31,10 @@ const Menu = () => {
           <Navbar.Brand href="/">Home</Navbar.Brand>
           <Nav className="ml-auto">
               {isLoggedIn ? (
-                <Nav.Link href="#" onClick={handleLogout}>Logout</Nav.Link>
+                <>
+                  <Nav.Link href="#">Xin chào: {userName}</Nav.Link>
+                  <Nav.Link href="#" onClick={handleLogout}>Logout</Nav.Link>
+                </>
               ) : (
                 <Button onClick={handleLoginClick}>Login</Button>
               )}

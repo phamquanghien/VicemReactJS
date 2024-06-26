@@ -7,15 +7,11 @@ function LoginModal({ show, handleClose, setIsLoggedIn }) {
   const [rememberMe, setRememberMe] = useState(false);
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:5075/api/Account/login', {
-        email,
-        password,
-        rememberMe
-      });
-      if (response.data && response.data.token) {
-        const { token } = response.data;
-        localStorage.setItem('token', token);
-        setIsLoggedIn(true);
+      const response = await axios.post('http://localhost:5075/api/Account/login',
+        { email, password, rememberMe });
+      if (response.data) {
+        localStorage.setItem('user', response.data);
+        setIsLoggedIn(true  );
         handleClose();
       } else {
         throw new Error('Invalid response data');
