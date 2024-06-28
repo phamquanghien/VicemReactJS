@@ -35,7 +35,10 @@ const Menu = () => {
         <Container>
           <Navbar.Brand href="/">Home</Navbar.Brand>
           {isLoggedIn && (
-            <Nav.Link href='/employee'>Employee</Nav.Link>
+            <>
+              <Nav.Link href='/role'>Role</Nav.Link>
+              <Nav.Link href='/employee'>Employee</Nav.Link>
+            </>
           )}
           <Nav className="ml-auto">
               {isLoggedIn ? (
