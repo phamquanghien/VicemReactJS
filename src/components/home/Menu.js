@@ -36,6 +36,7 @@ const Menu = () => {
           <Navbar.Brand href="/">Home</Navbar.Brand>
           {isLoggedIn && (
             <>
+              <Nav.Link href='/user'>User</Nav.Link>
               <Nav.Link href='/role'>Role</Nav.Link>
               <Nav.Link href='/employee'>Employee</Nav.Link>
             </>
