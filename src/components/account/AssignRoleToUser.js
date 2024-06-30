@@ -1,11 +1,14 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Form, ListGroup, Modal } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+
 
 const AssignRoleToUser = ({ show, handleClose, selectedUser, fetchData }) => {
     const [roles, setRoles] = useState([]);
     const [selectedRoles, setSelectedRoles] = useState([]);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (show) {
@@ -25,7 +28,7 @@ const AssignRoleToUser = ({ show, handleClose, selectedUser, fetchData }) => {
             const response = await axios.get('http://localhost:5075/api/Role', config);
             setRoles(response.data);
         } catch (error) {
-            setError(error);
+            handleErrorResponse(error);
         }
     };
     const handleRoleChange = (roleName) => {
@@ -58,11 +61,29 @@ const AssignRoleToUser = ({ show, handleClose, selectedUser, fetchData }) => {
             fetchData();
             handleClose();
         } catch (error) {
+            handleErrorResponse(error);
+        }
+    };
+    const handleErrorResponse = (error) => {
+        debugger;
+        if (error.response) {
+            switch (error.response.status) {
+                case 403:
+                    navigate('/403');
+                    break;
+                case 404:
+                    navigate('/404');
+                    break;
+                case 500:
+                    navigate('/500');
+                    break;
+                default:
+                    setError(new Error('An unexpected error occurred.'));
+            }
+        } else {
             setError(error);
         }
     };
-    
-
     const renderRoles = () => {
         return roles.map(role => (
             <ListGroup.Item key={role.id}>

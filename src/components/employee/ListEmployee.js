@@ -5,6 +5,7 @@ import AddEmployee from './AddEmployee';
 import EditEmployee from './EditEmployee';
 import { FaRegEdit } from 'react-icons/fa';
 import { MdDeleteForever } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
 const ListEmployee = () => {
     const [employees, setEmployees] = useState([]);
@@ -15,10 +16,29 @@ const ListEmployee = () => {
     const [deleteID, setDeleteID] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
     useEffect(() => {
         fetchEmployees();
     }, []);
+    const handleErrorResponse = (error) => {
+        debugger;
+        if (error.response) {
+            switch (error.response.status) {
+                case 403:
+                    navigate('/403');
+                    break;
+                case 404:
+                    navigate('/404');
+                    break;
+                default:
+                    setError(new Error('An unexpected error occurred.'));
+            }
+        } else {
+            setError(error);
+        }
+    };
     const fetchEmployees = async () => {
+        debugger;
         try {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -28,11 +48,11 @@ const ListEmployee = () => {
                 headers: { Authorization: `Bearer ${token}` }
             };
             const response = await axios.get('http://localhost:5075/api/Employee', config);
+            setLoading(false);
             setEmployees(response.data);
-            setLoading(false);
         } catch (error) {
-            setError(error);
             setLoading(false);
+            handleErrorResponse(error);
         }
     };
     const handleShowAddModal = () => {
@@ -83,9 +103,10 @@ const ListEmployee = () => {
             fetchEmployees();
             handleCloseDeleteModal();
         } catch (error) {
-          console.error(error);
+            handleErrorResponse(error);
         }
       };
+      
     return (
         <div className='container'>
             <div className="d-flex justify-content-between mb-2">
