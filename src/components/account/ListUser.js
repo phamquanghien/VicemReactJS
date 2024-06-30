@@ -13,6 +13,7 @@ const ListUser = () => {
         fetchUser();
     }, []);
     const fetchUser = async () => {
+        debugger;
         try {
             const token = localStorage.getItem('token');
             if (!token) {
