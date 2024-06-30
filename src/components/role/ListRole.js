@@ -3,16 +3,20 @@ import React, { useEffect, useState } from 'react';
 import { Table, Button, Modal, InputGroup, DropdownButton, DropdownItem } from 'react-bootstrap';
 import AddRole from './AddRole';
 import EditRole from './EditRole';
+import AssignPermissionsToRole from './AssignPermissionsToRole';
 import { FaRegEdit } from 'react-icons/fa';
 import { MdDeleteForever } from 'react-icons/md';
+import { MdAssignmentAdd, MdAssignmentInd } from "react-icons/md";
 
 const ListRole = () => {
     const [roles, setRoles] = useState([]);
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] =useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showAssignModal, setShowAssignModal] = useState(false);
     const [selectedRole, setSelectedRole] = useState(null);
-    const [deleteID, setDeleteID] = useState(null);
+    const [viewOrEditPermission, setViewOrEditPermission] = useState(false);
+    const [selectedID, setSelectedID] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     useEffect(() => {
@@ -53,15 +57,26 @@ const ListRole = () => {
     
     const handleShowDeleteModal = (role) => {
         setSelectedRole(role);
-        setDeleteID(role.id);
+        setSelectedID(role.id);
         setShowDeleteModal(true);
     };
     
-      const handleCloseDeleteModal = () => {
-        setDeleteID(null);
+    const handleCloseDeleteModal = () => {
+        setSelectedID(null);
         setSelectedRole(null);
         setShowDeleteModal(false);
-      };
+    };
+    const handleShowAssignModal = (role, viewOrEdit) => {
+        setSelectedRole(role);
+        setSelectedID(role.id);
+        setViewOrEditPermission(viewOrEdit)
+        setShowAssignModal(true);
+    }
+    const handleCloseAssignModal = () => {
+        setSelectedID(null);
+        setSelectedRole(null);
+        setShowAssignModal(false);
+    }
     
     if (loading) {
         return <div>Loading...</div>;
@@ -79,7 +94,7 @@ const ListRole = () => {
             const config = {
                 headers: { Authorization: `Bearer ${token}` }
             };
-            await axios.delete(`http://localhost:5075/api/Role/${deleteID}`, config);
+            await axios.delete(`http://localhost:5075/api/Role/${selectedID}`, config);
             fetchRoles();
             handleCloseDeleteModal();
         } catch (error) {
@@ -113,6 +128,8 @@ const ListRole = () => {
                                 <DropdownButton variant="success" title="Actions" id="input-group-dropdown-1">
                                     <DropdownItem onClick={() => handleShowEditModal(role)}><FaRegEdit className="text-success ud-cursor mb-1 mx-1"/>Edit</DropdownItem>
                                     <DropdownItem variant="danger" onClick={() => handleShowDeleteModal(role)}><MdDeleteForever size={20} className="text-danger ud-cursor mb-1 mx-0"/>Delete</DropdownItem>
+                                    <DropdownItem variant="primary" onClick={() => handleShowAssignModal(role, true)}><MdAssignmentAdd size={20} className="text-primary ud-cursor mb-1 mx-0"/>Assign Permission</DropdownItem>
+                                    <DropdownItem variant="primary" onClick={() => handleShowAssignModal(role, false)}><MdAssignmentInd size={20} className="text-primary ud-cursor mb-1 mx-0"/>View Permission</DropdownItem>
                                 </DropdownButton>
                             </InputGroup>
                             </td>
@@ -121,7 +138,10 @@ const ListRole = () => {
                 </tbody>
             </Table>
             {selectedRole && (
-                <EditRole show={showEditModal} handleClose={handleCloseEditModal} fetchRoles={fetchRoles} role={selectedRole} />
+                <>
+                    <EditRole show={showEditModal} handleClose={handleCloseEditModal} fetchRoles={fetchRoles} role={selectedRole} />
+                    <AssignPermissionsToRole show={showAssignModal} handleClose={handleCloseAssignModal} selectedRoleID={selectedID} actionViewOrEdit={viewOrEditPermission} />
+                </>
             )}
             <AddRole show={showAddModal} handleClose={handleCloseAddModal} fetchRoles={fetchRoles} />
             {selectedRole && (
