@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
 const EditRole = ({ show, handleClose, fetchRoles, role }) => {
+    const apiUrl = process.env.REACT_APP_API_BASE_URL + '/api/Role/';
     const [updatedRole, setUpdatedRole] = useState('');
 
     useEffect(() => {
@@ -30,7 +31,7 @@ const EditRole = ({ show, handleClose, fetchRoles, role }) => {
                 }
             };
 
-            await axios.put(`http://localhost:5075/api/Role/${role.id}`, updatedRole, config);
+            await axios.put(`${apiUrl}${role.id}`, updatedRole, config);
             handleClose(); // Close modal after updating the employee
             fetchRoles(); // Refresh the employee list after updating
         } catch (error) {

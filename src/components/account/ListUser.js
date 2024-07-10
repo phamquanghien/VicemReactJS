@@ -13,7 +13,7 @@ const ListUser = () => {
         fetchUser();
     }, []);
     const fetchUser = async () => {
-        debugger;
+        const apiUrl = process.env.REACT_APP_API_BASE_URL +'/api/Account/get-all-user';
         try {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -22,7 +22,7 @@ const ListUser = () => {
             const config = {
                 headers: { Authorization: `Bearer ${token}` }
             };
-            const response = await axios.get('http://localhost:5075/api/Account/get-all-user', config);
+            const response = await axios.get(apiUrl, config);
             setUsers(response.data);
         } catch (error) {
             setError(error);

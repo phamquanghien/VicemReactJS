@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
 const EditEmployee = ({ show, handleClose, fetchEmployees, employee }) => {
+    const apiUrl = process.env.REACT_APP_API_BASE_URL +'/api/Employee/';
     const [updatedEmployee, setUpdatedEmployee] = useState({
         employeeId:'',
         firstName: '',
@@ -51,7 +52,7 @@ const EditEmployee = ({ show, handleClose, fetchEmployees, employee }) => {
                 hireDate: new Date(updatedEmployee.hireDate).toISOString().split('T')[0],
             };
 
-            await axios.put(`http://localhost:5075/api/Employee/${employee.employeeId}`, formattedEmployee, config);
+            await axios.put(`${apiUrl}${employee.employeeId}`, formattedEmployee, config);
             handleClose(); // Close modal after updating the employee
             fetchEmployees(); // Refresh the employee list after updating
         } catch (error) {

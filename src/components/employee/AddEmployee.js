@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
 const AddEmployee = ({ show, handleClose, fetchEmployees }) => {
+    const apiUrl = process.env.REACT_APP_API_BASE_URL + '/api/Employee';
     const [newEmployee, setNewEmployee] = useState({
         firstName: '',
         lastName: '',
@@ -32,7 +33,7 @@ const AddEmployee = ({ show, handleClose, fetchEmployees }) => {
             const config = {
                 headers: { Authorization: `Bearer ${token}` }
             };
-            await axios.post('http://localhost:5075/api/Employee', formattedEmployee, config);
+            await axios.post(apiUrl, formattedEmployee, config);
             handleClose();
             fetchEmployees();
         } catch (error) {

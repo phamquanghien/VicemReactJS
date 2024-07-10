@@ -8,6 +8,7 @@ import { MdDeleteForever } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
 const ListEmployee = () => {
+    const apiUrl = process.env.REACT_APP_API_BASE_URL + '/api/Employee';
     const [employees, setEmployees] = useState([]);
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] =useState(false);
@@ -47,7 +48,7 @@ const ListEmployee = () => {
             const config = {
                 headers: { Authorization: `Bearer ${token}` }
             };
-            const response = await axios.get('http://localhost:5075/api/Employee', config);
+            const response = await axios.get(apiUrl, config);
             setLoading(false);
             setEmployees(response.data);
         } catch (error) {
@@ -99,7 +100,7 @@ const ListEmployee = () => {
             const config = {
                 headers: { Authorization: `Bearer ${token}` }
             };
-            await axios.delete(`http://localhost:5075/api/Employee/${deleteID}`, config);
+            await axios.delete(`${apiUrl}/${deleteID}`, config);
             fetchEmployees();
             handleCloseDeleteModal();
         } catch (error) {

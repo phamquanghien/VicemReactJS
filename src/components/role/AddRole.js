@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
 const AddRole = ({ show, handleClose, fetchRoles }) => {
+    const apiUrl = process.env.REACT_APP_API_BASE_URL + '/api/Role';
     const [newRole, setNewRole] = useState('');
 
     const handleInputChange = (e) => {
@@ -22,7 +23,7 @@ const AddRole = ({ show, handleClose, fetchRoles }) => {
                     Authorization: `Bearer ${token}`
                 }
             };
-            await axios.post('http://localhost:5075/api/Role', newRole, config);
+            await axios.post(apiUrl, newRole, config);
             handleClose();
             fetchRoles();
         } catch (error) {

@@ -9,6 +9,7 @@ import { MdDeleteForever } from 'react-icons/md';
 import { MdAssignmentAdd, MdAssignmentInd } from "react-icons/md";
 
 const ListRole = () => {
+    const apiUrl = process.env.REACT_APP_API_BASE_URL + '/api/Role/';
     const [roles, setRoles] = useState([]);
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] =useState(false);
@@ -31,7 +32,7 @@ const ListRole = () => {
             const config = {
                 headers: { Authorization: `Bearer ${token}` }
             };
-            const response = await axios.get('http://localhost:5075/api/Role', config);
+            const response = await axios.get(apiUrl, config);
             setRoles(response.data);
             setLoading(false);
         } catch (error) {
@@ -94,7 +95,7 @@ const ListRole = () => {
             const config = {
                 headers: { Authorization: `Bearer ${token}` }
             };
-            await axios.delete(`http://localhost:5075/api/Role/${selectedID}`, config);
+            await axios.delete(`${apiUrl}${selectedID}`, config);
             fetchRoles();
             handleCloseDeleteModal();
         } catch (error) {

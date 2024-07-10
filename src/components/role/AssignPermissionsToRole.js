@@ -4,6 +4,7 @@ import { Modal, Button, Form, ListGroup, Alert } from 'react-bootstrap';
 import { SystemPermissions } from './SystemPermissions';
 
 const AssignPermissionsToRole = ({ show, handleClose, selectedRoleID, actionViewOrEdit }) => {
+    const apiUrl = process.env.REACT_APP_API_BASE_URL + '/api/RolePermission/';
     const [rolePermissions, setRolePermissions] = useState([]);
     const [error, setError] = useState(null);
 
@@ -22,7 +23,7 @@ const AssignPermissionsToRole = ({ show, handleClose, selectedRoleID, actionView
             const config = {
                 headers: { Authorization: `Bearer ${token}` }
             };
-            const response = await axios.get(`http://localhost:5075/api/RolePermission/${selectedRoleID}/permissions`, config);
+            const response = await axios.get(`${apiUrl}${selectedRoleID}/permissions`, config);
             setRolePermissions(response.data.map(permission => SystemPermissions[permission]));
         } catch (error) {
             setError(error);
@@ -56,7 +57,7 @@ const AssignPermissionsToRole = ({ show, handleClose, selectedRoleID, actionView
                 Object.keys(SystemPermissions).findIndex(key => SystemPermissions[key] === permission)
             );
 
-            await axios.post(`http://localhost:5075/api/RolePermission/${selectedRoleID}/permissions`, permissionsToSubmit, config);
+            await axios.post(`${apiUrl}${selectedRoleID}/permissions`, permissionsToSubmit, config);
             handleClose();
         } catch (error) {
             setError(error);

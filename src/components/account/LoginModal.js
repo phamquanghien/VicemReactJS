@@ -6,8 +6,9 @@ function LoginModal({ show, handleClose, setIsLoggedIn, setUserName }) {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const handleLogin = async () => {
+    const apiUrl = process.env.REACT_APP_API_BASE_URL +'/api/Account/login';
     try {
-      const response = await axios.post('http://localhost:5075/api/Account/login',
+      const response = await axios.post(apiUrl,
         { email, password, rememberMe });
         if (response.data && response.data.token) {
           const { token, userName } = response.data;

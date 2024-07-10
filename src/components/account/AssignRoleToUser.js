@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 const AssignRoleToUser = ({ show, handleClose, selectedUser, fetchData }) => {
+    const apiURL = process.env.REACT_APP_API_BASE_URL ;
     const [roles, setRoles] = useState([]);
     const [selectedRoles, setSelectedRoles] = useState([]);
     const [error, setError] = useState(null);
@@ -25,7 +26,7 @@ const AssignRoleToUser = ({ show, handleClose, selectedUser, fetchData }) => {
             const config = {
                 headers: { Authorization: `Bearer ${token}` }
             };
-            const response = await axios.get('http://localhost:5075/api/Role', config);
+            const response = await axios.get(apiURL +'/api/Role', config);
             setRoles(response.data);
         } catch (error) {
             handleErrorResponse(error);
@@ -57,7 +58,7 @@ const AssignRoleToUser = ({ show, handleClose, selectedUser, fetchData }) => {
                 userId: selectedUser.id,
                 roleNames: selectedRoles
             };
-            await axios.post('http://localhost:5075/api/UserRole/AddRolesToUser', data, config);
+            await axios.post( apiURL + '/api/UserRole/AddRolesToUser', data, config);
             fetchData();
             handleClose();
         } catch (error) {
