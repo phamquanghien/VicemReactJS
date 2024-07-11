@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import axios from 'axios';
+import refreshAccessToken from './RefreshAccessToken';
 function LoginModal({ show, handleClose, setIsLoggedIn, setUserName }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -8,12 +8,13 @@ function LoginModal({ show, handleClose, setIsLoggedIn, setUserName }) {
   const handleLogin = async () => {
     const apiUrl = process.env.REACT_APP_API_BASE_URL +'/api/Account/login';
     try {
-      const response = await axios.post(apiUrl,
+      const response = await refreshAccessToken.post(apiUrl,
         { email, password, rememberMe });
         if (response.data && response.data.token) {
-          const { token, userName } = response.data;
+          const { token, refreshToken, userName } = response.data;
           localStorage.setItem('token', token);
           localStorage.setItem('userName',userName);
+          localStorage.setItem('refreshToken',refreshToken);
           setIsLoggedIn(true);
           setUserName(userName);
           handleClose();

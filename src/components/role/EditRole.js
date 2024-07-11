@@ -1,6 +1,6 @@
-import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import refreshAccessToken from '../account/RefreshAccessToken';
 
 const EditRole = ({ show, handleClose, fetchRoles, role }) => {
     const apiUrl = process.env.REACT_APP_API_BASE_URL + '/api/Role/';
@@ -19,21 +19,9 @@ const EditRole = ({ show, handleClose, fetchRoles, role }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error("No token found");
-            }
-
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                }
-            };
-
-            await axios.put(`${apiUrl}${role.id}`, updatedRole, config);
-            handleClose(); // Close modal after updating the employee
-            fetchRoles(); // Refresh the employee list after updating
+            await refreshAccessToken.put(`${apiUrl}${role.id}`, updatedRole);
+            handleClose();
+            fetchRoles();
         } catch (error) {
             console.error(error);
         }

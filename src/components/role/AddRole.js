@@ -1,6 +1,6 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import refreshAccessToken from '../account/RefreshAccessToken';
 
 const AddRole = ({ show, handleClose, fetchRoles }) => {
     const apiUrl = process.env.REACT_APP_API_BASE_URL + '/api/Role';
@@ -13,17 +13,7 @@ const AddRole = ({ show, handleClose, fetchRoles }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error("No token found");
-            }
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                }
-            };
-            await axios.post(apiUrl, newRole, config);
+            await refreshAccessToken.post(apiUrl, newRole);
             handleClose();
             fetchRoles();
         } catch (error) {

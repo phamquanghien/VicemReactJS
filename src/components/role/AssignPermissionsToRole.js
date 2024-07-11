@@ -1,7 +1,7 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form, ListGroup, Alert } from 'react-bootstrap';
 import { SystemPermissions } from './SystemPermissions';
+import refreshAccessToken from '../account/RefreshAccessToken';
 
 const AssignPermissionsToRole = ({ show, handleClose, selectedRoleID, actionViewOrEdit }) => {
     const apiUrl = process.env.REACT_APP_API_BASE_URL + '/api/RolePermission/';
@@ -16,14 +16,7 @@ const AssignPermissionsToRole = ({ show, handleClose, selectedRoleID, actionView
 
     const fetchRolePermissions = async () => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error("No token found");
-            }
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
-            const response = await axios.get(`${apiUrl}${selectedRoleID}/permissions`, config);
+            const response = await refreshAccessToken.get(`${apiUrl}${selectedRoleID}/permissions`);
             setRolePermissions(response.data.map(permission => SystemPermissions[permission]));
         } catch (error) {
             setError(error);
@@ -41,23 +34,11 @@ const AssignPermissionsToRole = ({ show, handleClose, selectedRoleID, actionView
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error("No token found");
-            }
-            const config = {
-                headers: { 
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                }
-            };
-
-            // Chuyển đổi rolePermissions từ tên quyền sang số thứ tự
             const permissionsToSubmit = rolePermissions.map(permission => 
                 Object.keys(SystemPermissions).findIndex(key => SystemPermissions[key] === permission)
             );
 
-            await axios.post(`${apiUrl}${selectedRoleID}/permissions`, permissionsToSubmit, config);
+            await refreshAccessToken.post(`${apiUrl}${selectedRoleID}/permissions`, permissionsToSubmit);
             handleClose();
         } catch (error) {
             setError(error);

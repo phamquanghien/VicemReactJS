@@ -1,6 +1,6 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import refreshAccessToken from '../account/RefreshAccessToken';
 
 const AddEmployee = ({ show, handleClose, fetchEmployees }) => {
     const apiUrl = process.env.REACT_APP_API_BASE_URL + '/api/Employee';
@@ -21,19 +21,12 @@ const AddEmployee = ({ show, handleClose, fetchEmployees }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error("No token found");
-            }
             const formattedEmployee = {
                 ...newEmployee,
                 dateOfBirth: new Date(newEmployee.dateOfBirth).toISOString().split('T')[0],
                 hireDate: new Date(newEmployee.hireDate).toISOString().split('T')[0],
             };
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
-            await axios.post(apiUrl, formattedEmployee, config);
+            await refreshAccessToken.post(apiUrl, formattedEmployee);
             handleClose();
             fetchEmployees();
         } catch (error) {

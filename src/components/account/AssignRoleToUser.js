@@ -1,7 +1,7 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Form, ListGroup, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import refreshAccessToken from './RefreshAccessToken';
 
 
 const AssignRoleToUser = ({ show, handleClose, selectedUser, fetchData }) => {
@@ -19,14 +19,14 @@ const AssignRoleToUser = ({ show, handleClose, selectedUser, fetchData }) => {
     }, [show, selectedUser]);
     const fetchRoles = async () => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error("No token found");
-            }
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
-            const response = await axios.get(apiURL +'/api/Role', config);
+            // const token = localStorage.getItem('token');
+            // if (!token) {
+            //     throw new Error("No token found");
+            // }
+            // const config = {
+            //     headers: { Authorization: `Bearer ${token}` }
+            // };
+            const response = await refreshAccessToken.get(apiURL +'/api/Role');
             setRoles(response.data);
         } catch (error) {
             handleErrorResponse(error);
@@ -44,21 +44,11 @@ const AssignRoleToUser = ({ show, handleClose, selectedUser, fetchData }) => {
         console.log(selectedRoles);
         e.preventDefault();
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error("No token found");
-            }
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                }
-            };
             const data = {
                 userId: selectedUser.id,
                 roleNames: selectedRoles
             };
-            await axios.post( apiURL + '/api/UserRole/AddRolesToUser', data, config);
+            await refreshAccessToken.post( apiURL + '/api/UserRole/AddRolesToUser', data);
             fetchData();
             handleClose();
         } catch (error) {
@@ -66,7 +56,6 @@ const AssignRoleToUser = ({ show, handleClose, selectedUser, fetchData }) => {
         }
     };
     const handleErrorResponse = (error) => {
-        debugger;
         if (error.response) {
             switch (error.response.status) {
                 case 403:

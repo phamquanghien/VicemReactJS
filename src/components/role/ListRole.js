@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Modal, InputGroup, DropdownButton, DropdownItem } from 'react-bootstrap';
 import AddRole from './AddRole';
@@ -7,6 +6,7 @@ import AssignPermissionsToRole from './AssignPermissionsToRole';
 import { FaRegEdit } from 'react-icons/fa';
 import { MdDeleteForever } from 'react-icons/md';
 import { MdAssignmentAdd, MdAssignmentInd } from "react-icons/md";
+import refreshAccessToken from '../account/RefreshAccessToken';
 
 const ListRole = () => {
     const apiUrl = process.env.REACT_APP_API_BASE_URL + '/api/Role/';
@@ -25,14 +25,7 @@ const ListRole = () => {
     }, []);
     const fetchRoles = async () => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error("No token found");
-            }
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
-            const response = await axios.get(apiUrl, config);
+            const response = await refreshAccessToken.get(apiUrl);
             setRoles(response.data);
             setLoading(false);
         } catch (error) {
@@ -88,14 +81,7 @@ const ListRole = () => {
     }
     const handleConfirmDelete = async () => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error("No token found");
-            }
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
-            await axios.delete(`${apiUrl}${selectedID}`, config);
+            await refreshAccessToken.delete(`${apiUrl}${selectedID}`);
             fetchRoles();
             handleCloseDeleteModal();
         } catch (error) {

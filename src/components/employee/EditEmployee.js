@@ -1,6 +1,6 @@
-import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import refreshAccessToken from '../account/RefreshAccessToken';
 
 const EditEmployee = ({ show, handleClose, fetchEmployees, employee }) => {
     const apiUrl = process.env.REACT_APP_API_BASE_URL +'/api/Employee/';
@@ -37,22 +37,13 @@ const EditEmployee = ({ show, handleClose, fetchEmployees, employee }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error("No token found");
-            }
-
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
-
             const formattedEmployee = {
                 ...updatedEmployee,
                 dateOfBirth: new Date(updatedEmployee.dateOfBirth).toISOString().split('T')[0],
                 hireDate: new Date(updatedEmployee.hireDate).toISOString().split('T')[0],
             };
 
-            await axios.put(`${apiUrl}${employee.employeeId}`, formattedEmployee, config);
+            await refreshAccessToken.put(`${apiUrl}${employee.employeeId}`, formattedEmployee);
             handleClose(); // Close modal after updating the employee
             fetchEmployees(); // Refresh the employee list after updating
         } catch (error) {

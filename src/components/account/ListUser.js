@@ -1,8 +1,8 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Table } from 'react-bootstrap';
 import { MdAssignmentAdd } from "react-icons/md";
 import AssignRoleToUser from './AssignRoleToUser';
+import refreshAccessToken from './RefreshAccessToken';
 
 const ListUser = () => {
     const [users, setUsers] = useState([]);
@@ -15,14 +15,7 @@ const ListUser = () => {
     const fetchUser = async () => {
         const apiUrl = process.env.REACT_APP_API_BASE_URL +'/api/Account/get-all-user';
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error("No token found");
-            }
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
-            const response = await axios.get(apiUrl, config);
+            const response = await refreshAccessToken.get(apiUrl);
             setUsers(response.data);
         } catch (error) {
             setError(error);

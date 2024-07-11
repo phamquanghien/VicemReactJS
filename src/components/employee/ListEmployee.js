@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Modal, InputGroup, DropdownButton, DropdownItem } from 'react-bootstrap';
 import AddEmployee from './AddEmployee';
@@ -6,6 +5,7 @@ import EditEmployee from './EditEmployee';
 import { FaRegEdit } from 'react-icons/fa';
 import { MdDeleteForever } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import refreshAccessToken from '../account/RefreshAccessToken';
 
 const ListEmployee = () => {
     const apiUrl = process.env.REACT_APP_API_BASE_URL + '/api/Employee';
@@ -41,14 +41,7 @@ const ListEmployee = () => {
     const fetchEmployees = async () => {
         debugger;
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error("No token found");
-            }
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
-            const response = await axios.get(apiUrl, config);
+            const response = await refreshAccessToken.get(apiUrl);
             setLoading(false);
             setEmployees(response.data);
         } catch (error) {
@@ -93,14 +86,7 @@ const ListEmployee = () => {
     }
     const handleConfirmDelete = async () => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error("No token found");
-            }
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
-            await axios.delete(`${apiUrl}/${deleteID}`, config);
+            await refreshAccessToken.delete(`${apiUrl}/${deleteID}`);
             fetchEmployees();
             handleCloseDeleteModal();
         } catch (error) {
