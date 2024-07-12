@@ -11,10 +11,9 @@ function LoginModal({ show, handleClose, setIsLoggedIn, setUserName }) {
       const response = await refreshAccessToken.post(apiUrl,
         { email, password, rememberMe });
         if (response.data && response.data.token) {
-          const { token, refreshToken, userName } = response.data;
+          const { token, userName } = response.data;
           localStorage.setItem('token', token);
           localStorage.setItem('userName',userName);
-          localStorage.setItem('refreshToken',refreshToken);
           setIsLoggedIn(true);
           setUserName(userName);
           handleClose();
