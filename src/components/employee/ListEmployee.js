@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import refreshAccessToken from '../account/RefreshAccessToken';
 
 const ListEmployee = () => {
-    const apiUrl = process.env.REACT_APP_API_BASE_URL + '/api/Employee';
+    const apiUrl = process.env.REACT_APP_API_BASE_URL + '/api/Employee/';
     const [employees, setEmployees] = useState([]);
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] =useState(false);
